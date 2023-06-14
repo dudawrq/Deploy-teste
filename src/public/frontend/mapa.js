@@ -103,6 +103,9 @@ const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+L.control.zoom({ position: 'bottomright' }).addTo(map);
+map.zoomControl.remove();
+
 
 var myRenderer = L.canvas({ padding: 0.5 });
 
@@ -313,7 +316,11 @@ function buscar_dados() {
             map.removeLayer(polylines[k]);
         }
     }
-
+    
+    var elemento = document.getElementById("content-botao");
+    elemento.style.display = "none";
+    var elemento2 = document.getElementById("toggleButton");
+    elemento2.style.display = "block";
 
 
 // CHOQUE 2
@@ -695,9 +702,32 @@ var customIcon_pico = L.icon({
 // });
 }
 
-function teste(){
-    console.log("teste")
-}
+async function downloadImage(imageSrc) {
+    const image = await fetch(imageSrc)
+    const imageBlog = await image.blob()
+    const imageURL = URL.createObjectURL(imageBlog)
+  
+    const link = document.createElement('a')
+    link.href = imageURL
+    link.download = 'mapa'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    console.log("downloaded")
+  }
+
+L.DomEvent.on(document.getElementById('export-btn'), 'click', function() {
+    leafletImage(map, function(err, canvas) {
+        var img = document.createElement('img');
+        var dimensions = map.getSize();
+        img.width = dimensions.x;
+        img.height = dimensions.y;
+        img.src = canvas.toDataURL();
+        downloadImage(img.src);
+        // window.open("").document.write(img.outerHTML);
+    });
+});
+
 
 //////////////////////  TESTE DE GRÁFICO //////////////////////	
 
@@ -771,3 +801,9 @@ function teste(){
 //         chart.draw(data, options);
 //     }
 // }
+const lerMaisBtn = document.getElementById('toggleButton');
+const conteudo = document.getElementById('content-botao');
+
+lerMaisBtn.addEventListener('click', function() {
+  conteudo.classList.toggle('conteudo-visivel');
+});

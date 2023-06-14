@@ -265,7 +265,8 @@ nav {
 
 /* Configuração conteúdo principal da (paghome.html) */
 header {
-  position: relative;
+  position: fixed;
+  width: 100%;
   z-index: 2;
   /* Define uma camada superior para a navbar */
 }
