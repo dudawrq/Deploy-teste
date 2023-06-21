@@ -1,26 +1,27 @@
+// requere o express, define a porta do site, requere o sqlite3 para uso do banco de dados, define qual banco de dados usar
 const express = require('express')
 const app = express()
 const hostname = '127.0.0.1';
 const port = process.env.PORT || 3000;
 const sqlite3 = require('sqlite3').verbose();
-const DBPATH = 'Banco_de_dados/dbProjeto.db';
+const DBPATH = 'src/Banco_de_dados/dbProjeto.db';
 const multer = require('multer');
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+// define a variavel db como o banco de dados sqlite 
 var db = new sqlite3.Database(DBPATH);
-app.use(express.static('public/frontend'));
+app.use(express.static(process.cwd()+'/src/public/frontend'));
 
 //variáveis e constantes necessárias para o pleno funcionamento do projeto, além
 //de outras definições.
 
 app.get('/', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.sendFile(__dirname + '/public/frontend/paghome.html');
+    res.sendFile( process.cwd() + '/src/public/frontend/paghome.html');
 }); //define o arquivo paghome como default quando se acessa o url do site, demonstrando-o.
 
 app.get('/analise', (req, res) => {
-    //console.log('/Frontend');
     res.sendFile(__dirname + '/public/analise.html');
 }); //envia o arquivo "análise.html" quando se realiza a requisição /analise, demonstrando-o e o lendo.
 
@@ -44,7 +45,7 @@ app.get('/info_Vagoes_E', (req, res) => {
         }
         res.send(rows)
     })
-})
+}) // pega os dados da tabela Resumo_vagoes, os quais o tipo de dados é completo e o tipo de vagão é E.
 
 app.get('/info_Vagoes_F', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -55,7 +56,8 @@ app.get('/info_Vagoes_F', (req, res) => {
         }
         res.send(rows)
     })
-})
+})// pega os dados da tabela Resumo_vagoes, os quais o tipo de dados é completo e o tipo de vagão é F.
+
 
 app.get('/info', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -82,7 +84,7 @@ app.get('/choque1', (req, res) => {
 
 app.get('/choque1All', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    var sql = `SELECT * FROM Choque1`;
+    var sql = `SELECT * FROM Choque1 ORDER BY data_hora ASC`;
     db.all(sql, [], (err, rows) => {
         if (err) {
             throw err;
@@ -164,20 +166,6 @@ app.get('/upload', (req, res) => {
     res.sendFile(__dirname + '/public/frontend/alimentacao.html');
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.listen(port, hostname, () => {
     console.log('Servidor rodando em http://' + hostname + ':' + port);
 }); //escreve no console o "link" de acesso para a aplicação.
@@ -186,3 +174,4 @@ app.listen(port, hostname, () => {
 // app.listen(port, "0.0.0.0", function() {
 //     console.log("Listening on Port 3000");
 //     });
+
